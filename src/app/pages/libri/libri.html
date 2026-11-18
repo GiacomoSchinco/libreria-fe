@@ -1,0 +1,53 @@
+<section class="page">
+  <header class="page__header">
+    <h1>Libri</h1>
+    <p>Tutti i volumi del catalogo.</p>
+  </header>
+
+  @if (libri.error()) {
+    <p class="error">Errore nel caricamento dei libri.</p>
+  }
+
+  <p-table
+    [value]="libri.value()?.content ?? []"
+    [lazy]="true"
+    [paginator]="true"
+    [rows]="pageSize()"
+    [first]="pageIndex() * pageSize()"
+    [totalRecords]="libri.value()?.page?.totalElements ?? 0"
+    [loading]="libri.isLoading()"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '44rem' }"
+    (onPage)="onPage($event)"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Titolo</th>
+        <th>Autori</th>
+        <th>Genere</th>
+        <th>Anno</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-libro>
+      <tr>
+        <td>{{ libro.titolo }}</td>
+        <td>
+          @for (autore of libro.autori; track autore.id) {
+            <span>{{autore.nome}} {{ autore.cognome }}{{ $last ? '' : ', ' }}</span>
+          }
+        </td>
+        <td><p-tag [value]="libro.genere.nome" severity="secondary" /></td>
+        <td>{{ libro.anno }}</td>
+        <td class="cell-action">
+          <a pButton text size="small" [routerLink]="['/libri', libro.id]">Dettaglio</a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">Nessun libro trovato.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

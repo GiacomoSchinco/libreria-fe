@@ -7,7 +7,8 @@ body {
 
 body {
   margin: 0;
-  background: var(--p-content-background, #f8fafc);
-  color: var(--p-text-color, #0f172a);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--p-surface-50, #fafafa);
+  color: var(--p-text-color, rgb(0 0 0 / 87%));
+  font-family: Roboto, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }

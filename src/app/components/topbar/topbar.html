@@ -1,0 +1,21 @@
+<p-toolbar styleClass="app-toolbar">
+  <ng-template #start>
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">L</span>
+      <span class="brand__text">
+        <span class="brand__name">{{ appName() }}</span>
+        <span class="brand__tag">Catalogo online</span>
+      </span>
+    </div>
+  </ng-template>
+  <ng-template #center>
+    <nav class="nav">
+      <a pButton text routerLink="/" routerLinkActive="nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
+        Home
+      </a>
+      <a pButton text routerLink="/libri" routerLinkActive="nav__link--active">Libri</a>
+    </nav>
+  </ng-template>
+  <ng-template #end>
+  </ng-template>
+</p-toolbar>

@@ -1,0 +1,23 @@
+.page {
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--p-form-field-invalid-border-color, #b3261e);
+}
+
+.authors {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.authors__nation {
+  color: var(--p-text-muted-color);
+  font-size: 0.85rem;
+}

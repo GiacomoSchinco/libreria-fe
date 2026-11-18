@@ -1,0 +1,27 @@
+<section class="page">
+  <a pButton text severity="secondary" routerLink="/libri">← Torna ai libri</a>
+
+  @if (libro.isLoading()) {
+    <p>Caricamento…</p>
+  }
+
+  @if (libro.error()) {
+    <p class="error">Libro non trovato.</p>
+  }
+
+  @if (libro.value(); as dettaglio) {
+    <p-card>
+      <ng-template #title>{{ dettaglio.titolo }}</ng-template>
+      <ng-template #subtitle>{{ dettaglio.anno }} · {{ dettaglio.genere.nome }}</ng-template>
+
+      <ul class="authors">
+        @for (autore of dettaglio.autori; track autore.id) {
+          <li>
+            {{ autore.nome }} {{ autore.cognome }}
+            <span class="authors__nation">{{ autore.nazionalita.nome }}</span>
+          </li>
+        }
+      </ul>
+    </p-card>
+  }
+</section>
