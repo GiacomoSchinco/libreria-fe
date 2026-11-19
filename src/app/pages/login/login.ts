@@ -67,7 +67,7 @@ export class LoginPage {
   /** Torna alla pagina richiesta dal guard, ma solo per URL interni. */
   private returnUrl(): string {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-    return returnUrl?.startsWith('/') ? returnUrl : '/';
+    return returnUrl?.startsWith('/') ? returnUrl : '/magazzino';
   }
 
   private showError(controlName: 'username' | 'password'): boolean {

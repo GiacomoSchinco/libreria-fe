@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, map, switchMap, tap, throwError } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { Auth, AuthMe, LoginResponse } from '../interfaces/auth';
@@ -21,12 +21,13 @@ export class AuthService {
   private readonly http = inject(HttpClient);
 
   private readonly tokenState = signal<string | null>(readStoredToken());
+  private readonly userState = signal<AuthMe | null>(null);
 
   /** true se c'è un token non scaduto: lo usano guard e interceptor. */
   readonly isLoggedIn = computed(() => this.tokenState() !== null);
 
-  /** Username estratto dal payload del JWT (null se non autenticato). */
-  readonly currentUsername = computed(() => decodePayload(this.tokenState())?.sub ?? null);
+  /** Username restituito dall'endpoint /auth/me. */
+  readonly currentUsername = computed(() => this.userState()?.username ?? null);
 
   /** Token corrente, da usare nell'header Authorization. */
   getToken(): string | null {
@@ -37,7 +38,18 @@ export class AuthService {
   login(auth: Auth): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${API_URL}/login`, auth)
-      .pipe(tap((response) => this.storeToken(response.token)));
+      .pipe(
+        tap((response) => this.storeToken(response.token)),
+        switchMap((response) =>
+          this.me().pipe(
+            map(() => response),
+            catchError((error: unknown) => {
+              this.logout();
+              return throwError(() => error);
+            }),
+          ),
+        ),
+      );
   }
 
   /** POST /api/auth/register */
@@ -48,11 +60,14 @@ export class AuthService {
 
   /** GET /api/auth/me */
   me(): Observable<AuthMe> {
-    return this.http.get<AuthMe>(`${API_URL}/me`);
+    return this.http
+      .get<AuthMe>(`${API_URL}/me`)
+      .pipe(tap((user) => this.userState.set(user)));
   }
 
   logout(): void {
     this.storeToken(null);
+    this.userState.set(null);
   }
 
   private storeToken(token: string | null): void {

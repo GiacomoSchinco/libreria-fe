@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth';
 
-const TOKEN_STORAGE_KEY = 'libreria.token';
+const TOKEN_STORAGE_KEY = 'Bearer Token';
 
 function fakeJwt(payload: Record<string, unknown>): string {
   return `header.${btoa(JSON.stringify(payload))}.signature`;
@@ -39,6 +39,10 @@ describe('AuthService', () => {
     expect(request.request.body).toEqual({ username: 'mario.rossi', password: 'segreta' });
     request.flush({ token });
 
+    const userRequest = http.expectOne(`${environment.apiBaseUrl}/auth/me`);
+    expect(userRequest.request.method).toBe('GET');
+    userRequest.flush({ username: 'mario.rossi' });
+
     expect(service.isLoggedIn()).toBe(true);
     expect(service.currentUsername()).toBe('mario.rossi');
     expect(service.getToken()).toBe(token);
@@ -52,6 +56,11 @@ describe('AuthService', () => {
     const service = createService();
 
     expect(service.getToken()).toBe(token);
+    expect(service.currentUsername()).toBeNull();
+
+    service.me().subscribe();
+    http.expectOne(`${environment.apiBaseUrl}/auth/me`).flush({ username: 'mario.rossi' });
+
     expect(service.currentUsername()).toBe('mario.rossi');
   });
 

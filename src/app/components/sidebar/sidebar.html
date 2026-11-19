@@ -1,0 +1,25 @@
+<div class="layout-wrapper">
+  @if (sidebarVisible) {
+    <aside class="layout-sidebar">
+      <div class="sidebar-heading">Menu</div>
+      <p-panelmenu [model]="menuItems" styleClass="w-full"></p-panelmenu>
+    </aside>
+  }
+
+  <main class="layout-main">
+    <div class="content-toolbar">
+      <p-button
+        icon="pi pi-bars"
+        [text]="true"
+        severity="secondary"
+        (onClick)="toggleSidebar()"
+        [ariaLabel]="sidebarVisible ? 'Nascondi menu' : 'Mostra menu'"
+      />
+      <span>Navigazione</span>
+    </div>
+
+    <div class="page-content">
+      <ng-content />
+    </div>
+  </main>
+</div>

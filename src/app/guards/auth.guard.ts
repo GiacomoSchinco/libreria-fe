@@ -13,3 +13,12 @@ export const authGuard: CanActivateFn = (_route, state) => {
     queryParams: { returnUrl: state.url },
   });
 };
+
+/** Reindirizza gli utenti autenticati alle pagine operative invece che a home/login. */
+export const guestGuard: CanActivateFn = () => {
+  if (!inject(AuthService).isLoggedIn()) {
+    return true;
+  }
+
+  return inject(Router).createUrlTree(['/magazzino']);
+};
