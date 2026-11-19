@@ -10,12 +10,29 @@
   </ng-template>
   <ng-template #center>
     <nav class="nav">
-      <a pButton text routerLink="/" routerLinkActive="nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
+      <a
+        pButton
+        text
+        size="small"
+        routerLink="/"
+        routerLinkActive="nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         Home
       </a>
-      <a pButton text routerLink="/libri" routerLinkActive="nav__link--active">Libri</a>
+      <a pButton text size="small" routerLink="/libri" routerLinkActive="nav__link--active"
+        >Libri</a
+      >
     </nav>
   </ng-template>
   <ng-template #end>
+    @if (showSession()) {
+      <span class="session__user">{{ username() }}</span>
+      <button pButton text size="small" type="button" (click)="logout()">Esci</button>
+    } @else {
+      <a pButton text size="small" routerLink="/login" routerLinkActive="nav__link--active"
+        >Accedi</a
+      >
+    }
   </ng-template>
 </p-toolbar>

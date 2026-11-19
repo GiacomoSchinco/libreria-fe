@@ -1,0 +1,104 @@
+:host {
+  display: flex;
+  flex: 1;
+  padding: 1.5rem 1.25rem;
+}
+
+.login {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.login__card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: min(21rem, 100%);
+  padding: 1.75rem;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: 0.875rem;
+  background: var(--p-content-background, #fff);
+  box-shadow: 0 20px 45px -30px rgb(15 23 42 / 45%);
+}
+
+.login__header {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.login__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--p-text-color, #0f172a);
+}
+
+.login__header p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--p-text-muted-color, #64748b);
+}
+
+.login__form {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--p-text-color, #0f172a);
+}
+
+.field__input {
+  width: 100%;
+}
+
+.field__input--invalid {
+  border-color: var(--p-form-field-invalid-border-color, #dc2626);
+}
+
+.field__password {
+  position: relative;
+  display: block;
+}
+
+.field__input--with-toggle {
+  padding-right: 2.75rem;
+}
+
+.field__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.field__error {
+  font-size: 0.75rem;
+  color: var(--p-form-field-invalid-border-color, #dc2626);
+}
+
+.submit {
+  width: 100%;
+}
+
+.login__error {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--p-form-field-invalid-border-color, #dc2626);
+  border-radius: 0.6rem;
+  background: var(--p-red-50, #fef2f2);
+  color: var(--p-form-field-invalid-border-color, #dc2626);
+  font-size: 0.8125rem;
+}

@@ -1,0 +1,62 @@
+<section class="login">
+  <div class="login__card">
+    <header class="login__header">
+      <h2>Accedi</h2>
+      <p>Inserisci username e password.</p>
+    </header>
+
+    @if (errorMessage(); as message) {
+      <p class="login__error" role="alert">{{ message }}</p>
+    }
+
+    <form class="login__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label class="field__label" for="username">Username</label>
+        <input
+          pInputText
+          id="username"
+          class="field__input"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          [class.field__input--invalid]="usernameError() !== null"
+        />
+        @if (usernameError(); as message) {
+          <small class="field__error">{{ message }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="password">Password</label>
+        <div class="field__password">
+          <input
+            pInputText
+            id="password"
+            class="field__input field__input--with-toggle"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+            [class.field__input--invalid]="passwordError() !== null"
+          />
+          <button
+            pButton
+            text
+            rounded
+            severity="secondary"
+            type="button"
+            class="field__password-toggle"
+            [icon]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"
+            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+            [attr.aria-pressed]="showPassword()"
+            (click)="togglePassword()"
+          ></button>
+        </div>
+        @if (passwordError(); as message) {
+          <small class="field__error">{{ message }}</small>
+        }
+      </div>
+
+      <button pButton type="submit" class="submit" [loading]="isLoading()">Accedi</button>
+    </form>
+  </div>
+</section>
