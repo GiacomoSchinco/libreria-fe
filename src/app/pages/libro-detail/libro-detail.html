@@ -1,27 +1,78 @@
-<section class="page">
+<section class="detail">
   <a pButton text severity="secondary" routerLink="/libri">← Torna ai libri</a>
 
   @if (libro.isLoading()) {
-    <p>Caricamento…</p>
+    <article class="book book--loading">
+      <header class="book__header">
+        <p-skeleton width="4.5rem" height="6rem" borderRadius="0.5rem" />
+        <div class="skeleton__lines">
+          <p-skeleton width="18rem" height="1.75rem" />
+          <p-skeleton width="12rem" height="1rem" styleClass="skeleton__gap" />
+        </div>
+      </header>
+      <p-skeleton width="100%" height="1rem" styleClass="skeleton__gap" />
+      <p-skeleton width="80%" height="1rem" styleClass="skeleton__gap" />
+    </article>
   }
 
   @if (libro.error()) {
-    <p class="error">Libro non trovato.</p>
+    <p-message severity="error" text="Libro non trovato." />
   }
 
   @if (libro.value(); as dettaglio) {
-    <p-card>
-      <ng-template #title>{{ dettaglio.titolo }}</ng-template>
-      <ng-template #subtitle>{{ dettaglio.anno }} · {{ dettaglio.genere.nome }}</ng-template>
+    <article class="book">
+      <header class="book__header">
+        <div class="book__cover" aria-hidden="true">{{ initial(dettaglio.titolo) }}</div>
 
-      <ul class="authors">
-        @for (autore of dettaglio.autori; track autore.id) {
-          <li>
-            {{ autore.nome }} {{ autore.cognome }}
-            <span class="authors__nation">{{ autore.nazionalita.nome }}</span>
-          </li>
-        }
-      </ul>
-    </p-card>
+        <div class="book__heading">
+          <h1 class="book__title">{{ dettaglio.titolo }}</h1>
+
+          <div class="book__meta">
+            <p-tag [value]="dettaglio.genere.nome" severity="info" rounded />
+            <span class="book__year">Prima edizione {{ dettaglio.anno }}</span>
+          </div>
+        </div>
+      </header>
+
+      <p-divider />
+
+      <dl class="facts">
+        <div class="facts__item">
+          <dt>Anno</dt>
+          <dd>{{ dettaglio.anno }}</dd>
+        </div>
+        <div class="facts__item">
+          <dt>Genere</dt>
+          <dd>{{ dettaglio.genere.nome }}</dd>
+        </div>
+        <div class="facts__item">
+          <dt>Autori</dt>
+          <dd>{{ dettaglio.autori.length }}</dd>
+        </div>
+      </dl>
+
+      <h2 class="book__section">Autori</h2>
+
+      @if (dettaglio.autori.length) {
+        <ul class="authors">
+          @for (autore of dettaglio.autori; track autore.id) {
+            <li class="author">
+              <p-avatar [label]="initial(autore.cognome || autore.nome)" shape="circle" size="large" />
+              <div class="author__info">
+                <span class="author__name">{{ autore.nome }} {{ autore.cognome }}</span>
+                <span class="author__meta">
+                  {{ autore.nazionalita.nome }}
+                  @if (autore.dataNascita) {
+                    · {{ autore.dataNascita | date: 'd MMMM yyyy' }}
+                  }
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="authors__empty">Nessun autore registrato.</p>
+      }
+    </article>
   }
 </section>

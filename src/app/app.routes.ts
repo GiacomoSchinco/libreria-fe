@@ -16,5 +16,15 @@ export const routes: Routes = [
     title: 'Libreria · Dettaglio libro',
     loadComponent: () => import('./pages/libro-detail/libro-detail').then((m) => m.LibroDetail),
   },
+  {
+    path: 'magazzino',
+    title: 'Libreria · Magazzino',
+    loadComponent: () => import('./pages/magazzino/magazzino').then((m) => m.Magazzino),
+  },
+  { 
+    path: 'autori',
+    title: 'Libreria · Autori',
+    loadComponent: () => import('./pages/autori/autori').then((m) => m.Autori),
+  },
   { path: '**', redirectTo: '' },
 ];

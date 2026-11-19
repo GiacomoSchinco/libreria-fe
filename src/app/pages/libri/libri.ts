@@ -17,7 +17,7 @@ export class Libri {
   private readonly libroService = inject(LibroService);
 
   protected readonly pageIndex = signal(0);
-  protected readonly pageSize = signal(5);
+  protected readonly pageSize = signal(10);
 
   protected readonly libri = rxResource({
     params: () => ({ page: this.pageIndex(), size: this.pageSize() }),
