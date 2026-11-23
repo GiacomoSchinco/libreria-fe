@@ -1,6 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+
 import { Topbar } from './components/topbar/topbar';
 import { Sidebar } from './components/sidebar/sidebar';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog';
@@ -11,14 +13,19 @@ import { ToastComponent } from './components/toast/toast';
   imports: [RouterOutlet, Topbar, Sidebar, ConfirmDialogComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   private readonly router = inject(Router);
+
   protected readonly showSidebar = signal(this.shouldShowSidebar(this.router.url));
 
   constructor() {
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
       .subscribe((event) => this.showSidebar.set(this.shouldShowSidebar(event.urlAfterRedirects)));
   }
 

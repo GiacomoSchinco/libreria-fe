@@ -1,38 +1,56 @@
 <section class="detail">
-  <a pButton text severity="secondary" routerLink="/libri">← Torna ai libri</a>
+  <nav class="breadcrumb" aria-label="Percorso">
+    <a class="breadcrumb__link" routerLink="/libri">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+      Libri
+    </a>
+    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+    <span class="breadcrumb__current">{{ libro.value()?.titolo ?? 'Dettaglio' }}</span>
+  </nav>
 
   @if (libro.isLoading()) {
-    <article class="book book--loading">
+    <article class="card book book--loading">
       <header class="book__header">
-        <p-skeleton width="4.5rem" height="6rem" borderRadius="0.5rem" />
+        <p-skeleton width="5.5rem" height="7.5rem" borderRadius="0.6rem" />
         <div class="skeleton__lines">
-          <p-skeleton width="18rem" height="1.75rem" />
-          <p-skeleton width="12rem" height="1rem" styleClass="skeleton__gap" />
+          <p-skeleton width="18rem" height="1.9rem" />
+          <p-skeleton width="12rem" height="1rem" />
         </div>
       </header>
-      <p-skeleton width="100%" height="1rem" styleClass="skeleton__gap" />
-      <p-skeleton width="80%" height="1rem" styleClass="skeleton__gap" />
+      <p-skeleton width="100%" height="1rem" />
+      <p-skeleton width="80%" height="1rem" />
     </article>
   }
 
   @if (libro.error()) {
-    <p-message severity="error" text="Libro non trovato." />
+    <div class="card card--padded error-panel" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      <div>
+        <p class="error-panel__title">Libro non trovato</p>
+        <p class="muted error-panel__text">Il volume richiesto non esiste o è stato rimosso.</p>
+      </div>
+      <a pButton severity="secondary" label="Torna al catalogo" routerLink="/libri"></a>
+    </div>
   }
 
   @if (libro.value(); as dettaglio) {
-    <article class="book">
+    <article class="card book">
       <header class="book__header">
-        <div class="book__cover" aria-hidden="true">{{ initial(dettaglio.titolo) }}</div>
+        <div class="book__cover" aria-hidden="true">
+          <span class="book__initial">{{ initial(dettaglio.titolo) }}</span>
+          <i class="pi pi-book book__icon"></i>
+        </div>
 
         <div class="book__heading">
-          <h1 class="book__title">{{ dettaglio.titolo }}</h1>
-
           <div class="book__meta">
             @if (dettaglio.genere) {
               <p-tag [value]="dettaglio.genere.nome" severity="info" rounded />
             }
             <span class="book__year">Prima edizione {{ dettaglio.anno }}</span>
           </div>
+
+          <h1 class="book__title">{{ dettaglio.titolo }}</h1>
+          <p class="book__authors">{{ autoriLabel() }}</p>
         </div>
       </header>
 
@@ -40,15 +58,15 @@
 
       <dl class="facts">
         <div class="facts__item">
-          <dt>Anno</dt>
+          <dt><i class="pi pi-calendar" aria-hidden="true"></i> Anno</dt>
           <dd>{{ dettaglio.anno }}</dd>
         </div>
         <div class="facts__item">
-          <dt>Genere</dt>
+          <dt><i class="pi pi-tag" aria-hidden="true"></i> Genere</dt>
           <dd>{{ dettaglio.genere?.nome ?? '—' }}</dd>
         </div>
         <div class="facts__item">
-          <dt>Autori</dt>
+          <dt><i class="pi pi-users" aria-hidden="true"></i> Autori</dt>
           <dd>{{ dettaglio.autori.length }}</dd>
         </div>
       </dl>

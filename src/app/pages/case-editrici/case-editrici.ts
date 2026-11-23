@@ -1,20 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { CasaEditriceService } from '../../services/casa-editrice';
 import { ConfirmDialogService } from '../../services/confirm-dialog';
 import { NotificationService } from '../../services/notification';
 import { NomeDialogComponent } from '../../components/nome-dialog/nome-dialog';
+import { PageHeader } from '../../components/page-header/page-header';
+import { EmptyState } from '../../components/empty-state/empty-state';
 import { CasaEditrice } from '../../interfaces/casa-editrice';
 
 @Component({
   selector: 'app-case-editrici',
-  imports: [TableModule, Button, NomeDialogComponent],
+  imports: [TableModule, Button, Tooltip, NomeDialogComponent, PageHeader, EmptyState],
   templateUrl: './case-editrici.html',
-  styleUrl: './case-editrici.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CaseEditrici {
   private readonly casaEditriceService = inject(CasaEditriceService);
@@ -29,6 +32,14 @@ export class CaseEditrici {
 
   protected readonly caseEditrici = rxResource({
     stream: () => this.casaEditriceService.getAll(),
+  });
+
+  protected readonly subtitle = computed(() => {
+    const totale = this.caseEditrici.value()?.length;
+    if (totale === undefined) {
+      return 'Tutte le case editrici registrate.';
+    }
+    return totale === 1 ? '1 casa editrice registrata.' : `${totale} case editrici registrate.`;
   });
 
   protected openCreate(): void {

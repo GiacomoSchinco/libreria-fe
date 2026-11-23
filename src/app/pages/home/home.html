@@ -1,4 +1,29 @@
 <section class="home">
-  <h1>Hello World</h1>
-  <p>Pagina home: inizia a costruire da qui.</p>
+  <div class="home__glow" aria-hidden="true"></div>
+
+  <div class="home__hero">
+    <p class="home__eyebrow">Catalogo librario</p>
+    <h1 class="home__title">
+      Tutto il tuo catalogo,
+      <span>in un unico posto.</span>
+    </h1>
+    <p class="home__lead">
+      Gestisci libri, autori, generi e giacenze di magazzino con un'interfaccia semplice e veloce.
+    </p>
+
+    <div class="home__actions">
+      <a pButton routerLink="/login" label="Accedi" icon="pi pi-sign-in" size="large"></a>
+      <span class="home__note">Accesso riservato al personale</span>
+    </div>
+  </div>
+
+  <ul class="home__features">
+    @for (feature of features; track feature.title) {
+      <li class="feature">
+        <span class="feature__icon" aria-hidden="true"><i class="pi" [class]="feature.icon"></i></span>
+        <h2 class="feature__title">{{ feature.title }}</h2>
+        <p class="feature__text">{{ feature.text }}</p>
+      </li>
+    }
+  </ul>
 </section>

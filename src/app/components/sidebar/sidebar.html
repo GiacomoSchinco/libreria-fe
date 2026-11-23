@@ -1,25 +1,58 @@
-<div class="layout-wrapper">
-  @if (sidebarVisible) {
-    <aside class="layout-sidebar">
-      <div class="sidebar-heading">Menu</div>
-      <p-panelmenu [model]="menuItems" styleClass="w-full"></p-panelmenu>
-    </aside>
+<div class="shell" [class.shell--rail]="rail()">
+  <aside class="sidebar" [class.sidebar--open]="mobileOpen()" aria-label="Menu principale">
+    <nav class="nav">
+      @for (group of navigation; track group.label) {
+        <section class="nav__group">
+          <p class="nav__label">{{ group.label }}</p>
+          <ul class="nav__list">
+            @for (item of group.items; track item.route) {
+              <li>
+                <a
+                  class="nav__link"
+                  [routerLink]="item.route"
+                  routerLinkActive="nav__link--active"
+                  [pTooltip]="rail() ? item.label : undefined"
+                  tooltipPosition="right"
+                  (click)="closeMobile()"
+                >
+                  <i class="pi" [class]="item.icon" aria-hidden="true"></i>
+                  <span class="nav__text">{{ item.label }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <button
+        type="button"
+        class="sidebar__collapse"
+        (click)="toggleRail()"
+        [attr.aria-label]="rail() ? 'Espandi il menu' : 'Comprimi il menu'"
+        [attr.aria-pressed]="rail()"
+      >
+        <i
+          class="pi"
+          [class]="rail() ? 'pi-angle-double-right' : 'pi-angle-double-left'"
+          aria-hidden="true"
+        ></i>
+        <span class="nav__text">Comprimi menu</span>
+      </button>
+    </div>
+  </aside>
+
+  @if (mobileOpen()) {
+    <button
+      type="button"
+      class="shell__backdrop"
+      aria-label="Chiudi il menu"
+      (click)="closeMobile()"
+    ></button>
   }
 
-  <main class="layout-main">
-    <div class="content-toolbar">
-      <p-button
-        icon="pi pi-bars"
-        [text]="true"
-        severity="secondary"
-        (onClick)="toggleSidebar()"
-        [ariaLabel]="sidebarVisible ? 'Nascondi menu' : 'Mostra menu'"
-      />
-      <span>Navigazione</span>
-    </div>
-
-    <div class="page-content">
-      <ng-content />
-    </div>
+  <main class="layout-main" id="contenuto">
+    <ng-content />
   </main>
 </div>

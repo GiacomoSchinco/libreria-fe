@@ -17,7 +17,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelector('app-topbar p-toolbar')).toBeTruthy();
+    expect(compiled.querySelector('app-topbar .topbar')).toBeTruthy();
     expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

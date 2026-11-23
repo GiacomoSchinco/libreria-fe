@@ -1,4 +1,14 @@
-import { Component, computed, effect, inject, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { AutoComplete } from 'primeng/autocomplete';
@@ -23,6 +33,7 @@ const MIN_RICERCA = 3;
   imports: [Dialog, AutoComplete, Select, InputNumber, Button, FormsModule],
   templateUrl: './magazzino-dialog.html',
   styleUrl: './magazzino-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MagazzinoDialogComponent {
   private readonly libroService = inject(LibroService);

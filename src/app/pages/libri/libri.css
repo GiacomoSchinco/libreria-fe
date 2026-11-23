@@ -1,18 +1,8 @@
-.cell-action {
-  text-align: right;
+.authors {
+  color: var(--app-text);
+  font-size: 0.875rem;
 }
 
-.row-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.25rem;
-}
-
-.page__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.libri-search {
+  width: min(18rem, 60vw);
 }

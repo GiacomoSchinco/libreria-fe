@@ -1,17 +1,24 @@
-.page__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.qty {
+  display: inline-block;
+  min-width: 2.1rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-green-500), transparent 88%);
+  color: var(--p-green-700);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-align: center;
 }
 
-.cell-action {
-  text-align: right;
+.qty--low {
+  background: color-mix(in srgb, var(--p-amber-500), transparent 84%);
+  color: var(--p-amber-700);
 }
 
-.row-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.25rem;
+html.p-dark .qty {
+  color: var(--p-green-300);
+}
+
+html.p-dark .qty--low {
+  color: var(--p-amber-300);
 }

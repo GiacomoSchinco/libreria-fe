@@ -1,4 +1,13 @@
-import { Component, computed, effect, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Chip } from 'primeng/chip';
@@ -38,6 +47,7 @@ type ModoGenere = 'esistente' | 'nuovo';
   ],
   templateUrl: './libro-dialog.html',
   styleUrl: './libro-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LibroDialogComponent {
   readonly visible = model.required<boolean>();

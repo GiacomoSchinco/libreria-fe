@@ -1,20 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { GenereService } from '../../services/genere';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ConfirmDialogService } from '../../services/confirm-dialog';
 import { NotificationService } from '../../services/notification';
 import { Genere } from '../../interfaces/genere';
 import { NomeDialogComponent } from '../../components/nome-dialog/nome-dialog';
+import { PageHeader } from '../../components/page-header/page-header';
+import { EmptyState } from '../../components/empty-state/empty-state';
 
 @Component({
   selector: 'app-generi',
-  imports: [TableModule, Button, NomeDialogComponent],
+  imports: [TableModule, Button, Tooltip, NomeDialogComponent, PageHeader, EmptyState],
   templateUrl: './generi.html',
-  styleUrl: './generi.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Generi {
   private readonly genereService = inject(GenereService);
@@ -29,6 +32,14 @@ export class Generi {
 
   protected readonly generi = rxResource({
     stream: () => this.genereService.getAll(),
+  });
+
+  protected readonly subtitle = computed(() => {
+    const totale = this.generi.value()?.length;
+    if (totale === undefined) {
+      return 'Tutti i generi registrati.';
+    }
+    return totale === 1 ? '1 genere registrato.' : `${totale} generi registrati.`;
   });
 
   protected openCreate(): void {

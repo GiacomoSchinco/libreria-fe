@@ -1,20 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NazionalitaService } from '../../services/nazionalita';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ConfirmDialogService } from '../../services/confirm-dialog';
 import { NotificationService } from '../../services/notification';
 import { Nazionalita as NazionalitaModel } from '../../interfaces/nazionalita';
 import { NomeDialogComponent } from '../../components/nome-dialog/nome-dialog';
+import { PageHeader } from '../../components/page-header/page-header';
+import { EmptyState } from '../../components/empty-state/empty-state';
 
 @Component({
   selector: 'app-nazionalita',
-  imports: [TableModule, Button, NomeDialogComponent],
+  imports: [TableModule, Button, Tooltip, NomeDialogComponent, PageHeader, EmptyState],
   templateUrl: './nazionalita.html',
-  styleUrl: './nazionalita.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Nazionalita {
   private readonly nazionalitaService = inject(NazionalitaService);
@@ -29,6 +32,14 @@ export class Nazionalita {
 
   protected readonly nazionalita = rxResource({
     stream: () => this.nazionalitaService.getAll(),
+  });
+
+  protected readonly subtitle = computed(() => {
+    const totale = this.nazionalita.value()?.length;
+    if (totale === undefined) {
+      return 'Tutte le nazionalità registrate.';
+    }
+    return totale === 1 ? '1 nazionalità registrata.' : `${totale} nazionalità registrate.`;
   });
 
   protected openCreate(): void {

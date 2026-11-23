@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
@@ -13,6 +13,7 @@ import { InputText } from 'primeng/inputtext';
   imports: [Dialog, InputText, Button, FormsModule],
   templateUrl: './nome-dialog.html',
   styleUrl: './nome-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NomeDialogComponent {
   readonly visible = model.required<boolean>();

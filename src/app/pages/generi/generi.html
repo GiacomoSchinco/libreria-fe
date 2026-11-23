@@ -1,60 +1,79 @@
 <section class="page">
-  <header class="page__header">
-    <div>
-      <h1>Generi</h1>
-      <p>Tutti i generi registrati.</p>
-    </div>
+  <app-page-header title="Generi" [subtitle]="subtitle()" icon="pi pi-tags">
     <p-button label="Nuovo genere" icon="pi pi-plus" (onClick)="openCreate()" />
-  </header>
+  </app-page-header>
+
   @if (generi.error()) {
-    <p class="error">Errore nel caricamento dei Generi.</p>
+    <p class="inline-error">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      <span>Errore nel caricamento dei generi.</span>
+      <p-button label="Riprova" size="small" [text]="true" (onClick)="generi.reload()" />
+    </p>
   }
-  @if (generi.value()) {
-    <p-table
-      [value]="generi.value() ?? []"
-      [loading]="generi.isLoading()"
-      dataKey="id"
-      [tableStyle]="{ 'min-width': '26rem' }"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Nome</th>
-          <th></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-genere>
-        <tr>
-          <td>{{ genere.nome }}</td>
-          <td>
-            <div class="row-actions">
-              <p-button
-                icon="pi pi-pencil"
-                severity="secondary"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'Modifica ' + genere.nome"
-                (onClick)="openEdit(genere)"
-              />
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [loading]="deleting() === genere.id"
-                [ariaLabel]="'Elimina ' + genere.nome"
-                (onClick)="delete(genere)"
-              />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="2">Nessun genere trovato.</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  }
+
+  <div class="card table-card">
+    <div class="table-scroll">
+      <p-table
+        [value]="generi.value() ?? []"
+        [loading]="generi.isLoading()"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '22rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Genere</th>
+            <th aria-label="Azioni"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-genere>
+          <tr>
+            <td>
+              <div class="named">
+                <span class="named__icon" aria-hidden="true"><i class="pi pi-tag"></i></span>
+                <span class="cell-title">{{ genere.nome }}</span>
+              </div>
+            </td>
+            <td class="cell-action">
+              <div class="row-actions">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Modifica"
+                  [ariaLabel]="'Modifica ' + genere.nome"
+                  (onClick)="openEdit(genere)"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Elimina"
+                  [loading]="deleting() === genere.id"
+                  [ariaLabel]="'Elimina ' + genere.nome"
+                  (onClick)="delete(genere)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="2">
+              @if (!generi.isLoading()) {
+                <app-empty-state
+                  icon="pi pi-tags"
+                  title="Nessun genere"
+                  message="Crea i generi per classificare i libri del catalogo."
+                />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 
   <app-nome-dialog
     [visible]="dialogVisible()"

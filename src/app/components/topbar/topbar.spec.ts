@@ -19,11 +19,21 @@ describe('Topbar', () => {
     await fixture.whenStable();
   });
 
-  it('should render the nav links', () => {
+  it('should render the brand and the login link', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(component).toBeTruthy();
-    expect(compiled.querySelector('p-toolbar')).toBeTruthy();
-    expect(compiled.textContent).toContain('Libri');
+    expect(compiled.querySelector('.topbar')).toBeTruthy();
+    expect(compiled.textContent).toContain('Libreria');
+    expect(compiled.querySelector('a[href="/login"]')).toBeTruthy();
+  });
+
+  it('shows the menu button only when requested', async () => {
+    fixture.componentRef.setInput('showMenu', true);
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.topbar__menu')).toBeTruthy();
   });
 });

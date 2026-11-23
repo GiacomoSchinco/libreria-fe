@@ -1,22 +1,25 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { AutoreService } from '../../services/autore';
 import { NazionalitaService } from '../../services/nazionalita';
 import { ConfirmDialogService } from '../../services/confirm-dialog';
 import { NotificationService } from '../../services/notification';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 import { DatePipe } from '@angular/common';
 
 import { AutoreDialogComponent } from '../../components/autore-dialog/autore-dialog';
+import { PageHeader } from '../../components/page-header/page-header';
+import { EmptyState } from '../../components/empty-state/empty-state';
 import { Autore, AutoreRequest } from '../../interfaces/autore';
 
 @Component({
   selector: 'app-autori',
-  imports: [TableModule, Button, DatePipe, AutoreDialogComponent],
+  imports: [TableModule, Button, Tooltip, DatePipe, AutoreDialogComponent, PageHeader, EmptyState],
   templateUrl: './autori.html',
-  styleUrl: './autori.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Autori {
   private readonly autoreService = inject(AutoreService);
@@ -39,8 +42,21 @@ export class Autori {
   });
 
   protected readonly nazionalitaOptions = rxResource({
-    stream: () => this.nazionalitaService.getAll(),
+    params: () => this.dialogVisible(),
+    stream: ({ params: open }) => (open ? this.nazionalitaService.getAll() : of([])),
   });
+
+  protected readonly subtitle = computed(() => {
+    const total = this.autori.value()?.page?.totalElements;
+    if (total === undefined) {
+      return 'Tutti gli autori registrati.';
+    }
+    return total === 1 ? '1 autore registrato.' : `${total} autori registrati.`;
+  });
+
+  protected initial(text: string | undefined): string {
+    return text?.trim().charAt(0).toUpperCase() || '?';
+  }
 
   protected onPage(event: { first: number; rows: number }): void {
     this.pageSize.set(event.rows);

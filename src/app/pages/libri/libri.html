@@ -1,74 +1,120 @@
 <section class="page">
-  <header class="page__header">
-    <div>
-      <h1>Libri</h1>
-      <p>Tutti i volumi del catalogo.</p>
-    </div>
+  <app-page-header title="Libri" [subtitle]="subtitle()" icon="pi pi-book">
+    <p-autocomplete
+      inputId="libri-search"
+      name="ricerca"
+      styleClass="libri-search"
+      placeholder="Cerca per titolo…"
+      ariaLabel="Cerca un libro per titolo"
+      [suggestions]="suggerimenti()"
+      (completeMethod)="cerca($event)"
+      (onSelect)="apriLibro($event.value)"
+      optionLabel="titolo"
+      [minLength]="3"
+      [delay]="300"
+      [forceSelection]="true"
+      [dropdown]="true"
+      appendTo="body"
+    />
     <p-button label="Nuovo libro" icon="pi pi-plus" (onClick)="openCreate()" />
-  </header>
+  </app-page-header>
 
   @if (libri.error()) {
-    <p class="error">Errore nel caricamento dei libri.</p>
+    <p class="inline-error">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      <span>Errore nel caricamento dei libri.</span>
+      <p-button label="Riprova" size="small" [text]="true" (onClick)="libri.reload()" />
+    </p>
   }
 
-  <p-table
-    [value]="libri.value()?.content ?? []"
-    [lazy]="true"
-    [paginator]="true"
-    [rows]="pageSize()"
-    [first]="pageIndex() * pageSize()"
-    [totalRecords]="libri.value()?.page?.totalElements ?? 0"
-    [loading]="libri.isLoading()"
-    dataKey="id"
-    [tableStyle]="{ 'min-width': '44rem' }"
-    (onPage)="onPage($event)"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Titolo</th>
-        <th>Autori</th>
-        <th>Genere</th>
-        <th>Anno</th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-libro>
-      <tr>
-        <td>{{ libro.titolo }}</td>
-        <td>
-          @for (autore of libro.autori; track autore.id) {
-            <span>{{autore.nome}} {{ autore.cognome }}{{ $last ? '' : ', ' }}</span>
-          }
-        </td>
-        <td>
-          @if (libro.genere) {
-            <p-tag [value]="libro.genere.nome" severity="secondary" />
-          } @else {
-            <span>—</span>
-          }
-        </td>
-        <td>{{ libro.anno }}</td>
-        <td class="cell-action">
-          <div class="row-actions">
-            <p-button
-              icon="pi pi-pencil"
-              severity="secondary"
-              [text]="true"
-              [rounded]="true"
-              [ariaLabel]="'Modifica ' + libro.titolo"
-              (onClick)="openEdit(libro)"
-            />
-            <a pButton text size="small" [routerLink]="['/libri', libro.id]">Dettaglio</a>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="5">Nessun libro trovato.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <div class="card table-card">
+    <div class="table-scroll">
+      <p-table
+        [value]="libri.value()?.content ?? []"
+        [lazy]="true"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [first]="pageIndex() * pageSize()"
+        [totalRecords]="libri.value()?.page?.totalElements ?? 0"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}–{last} di {totalRecords}"
+        [loading]="libri.isLoading()"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '40rem' }"
+        (onPage)="onPage($event)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Libro</th>
+            <th>Autori</th>
+            <th>Genere</th>
+            <th class="cell-num">Anno</th>
+            <th aria-label="Azioni"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-libro>
+          <tr>
+            <td>
+              <div class="book-cell">
+                <span class="book-cell__cover" aria-hidden="true">{{ initial(libro.titolo) }}</span>
+                <a class="cell-link stack" [routerLink]="['/libri', libro.id]">
+                  <span class="cell-title">{{ libro.titolo }}</span>
+                </a>
+              </div>
+            </td>
+            <td>
+              <span class="authors">{{ autoriLabel(libro) || '—' }}</span>
+            </td>
+            <td>
+              @if (libro.genere) {
+                <p-tag [value]="libro.genere.nome" severity="secondary" rounded />
+              } @else {
+                <span class="muted">—</span>
+              }
+            </td>
+            <td class="cell-num">{{ libro.anno }}</td>
+            <td class="cell-action">
+              <div class="row-actions">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Modifica"
+                  [ariaLabel]="'Modifica ' + libro.titolo"
+                  (onClick)="openEdit(libro)"
+                />
+                <a
+                  pButton
+                  severity="secondary"
+                  [text]="true"
+                  [rounded]="true"
+                  icon="pi pi-arrow-right"
+                  pTooltip="Dettaglio"
+                  [attr.aria-label]="'Dettaglio ' + libro.titolo"
+                  [routerLink]="['/libri', libro.id]"
+                ></a>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">
+              @if (!libri.isLoading()) {
+                <app-empty-state
+                  icon="pi pi-book"
+                  title="Nessun libro in catalogo"
+                  message="Aggiungi il primo volume per iniziare a popolare il catalogo."
+                />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 
   <app-libro-dialog
     [visible]="dialogVisible()"

@@ -1,18 +1,20 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonDirective } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { Brand } from '../../components/brand/brand';
 import { ApiError } from '../../interfaces/api-error';
 import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login-page',
-  imports: [ReactiveFormsModule, ButtonDirective, InputTextModule],
+  imports: [ReactiveFormsModule, ButtonDirective, InputTextModule, Brand],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPage {
   private readonly fb = inject(FormBuilder);

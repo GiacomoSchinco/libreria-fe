@@ -1,74 +1,94 @@
 <section class="page">
-  <header class="page__header">
-    <div>
-      <h1>Magazzino</h1>
-      <p>Tutti i libri in magazzino.</p>
-    </div>
+  <app-page-header title="Magazzino" [subtitle]="subtitle()" icon="pi pi-box">
     <p-button label="Aggiungi libro" icon="pi pi-plus" (onClick)="openCreate()" />
-  </header>
+  </app-page-header>
 
   @if (magazzino.error()) {
-    <p class="error">Errore nel caricamento del Magazzino.</p>
+    <p class="inline-error">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      <span>Errore nel caricamento del magazzino.</span>
+      <p-button label="Riprova" size="small" [text]="true" (onClick)="magazzino.reload()" />
+    </p>
   }
 
-  @if (magazzino.value()) {
-    <p-table
-      [value]="magazzino.value()?.content ?? []"
-      [lazy]="true"
-      [paginator]="true"
-      [rows]="pageSize()"
-      [first]="pageIndex() * pageSize()"
-      [totalRecords]="magazzino.value()?.page?.totalElements ?? 0"
-      [loading]="magazzino.isLoading()"
-      dataKey="id"
-      [tableStyle]="{ 'min-width': '48rem' }"
-      (onPage)="onPage($event)"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Titolo</th>
-          <th>Casa Editrice</th>
-          <th>Quantità</th>
-          <th>Anno</th>
-          <th></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-riga>
-        <tr>
-          <td>{{ riga.libro.titolo }}</td>
-          <td>{{ riga.casaEditrice?.nome ?? '—' }}</td>
-          <td>{{ riga.quantita }}</td>
-          <td>{{ riga.libro.anno }}</td>
-          <td class="cell-action">
-            <div class="row-actions">
-              <p-button
-                icon="pi pi-pencil"
-                severity="secondary"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'Modifica ' + riga.libro.titolo"
-                (onClick)="openEdit(riga)"
-              />
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [loading]="deleting() === riga.id"
-                [ariaLabel]="'Elimina ' + riga.libro.titolo"
-                (onClick)="delete(riga)"
-              />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="5">Nessun libro trovato.</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  }
+  <div class="card table-card">
+    <div class="table-scroll">
+      <p-table
+        [value]="magazzino.value()?.content ?? []"
+        [lazy]="true"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [first]="pageIndex() * pageSize()"
+        [totalRecords]="magazzino.value()?.page?.totalElements ?? 0"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [loading]="magazzino.isLoading()"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '40rem' }"
+        (onPage)="onPage($event)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Libro</th>
+            <th>Casa editrice</th>
+            <th class="cell-num">Quantità</th>
+            <th class="cell-num">Anno</th>
+            <th aria-label="Azioni"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-riga>
+          <tr>
+            <td>
+              <div class="book-cell">
+                <span class="book-cell__cover" aria-hidden="true">{{ initial(riga.libro.titolo) }}</span>
+                <span class="cell-title">{{ riga.libro.titolo }}</span>
+              </div>
+            </td>
+            <td>{{ riga.casaEditrice?.nome ?? '—' }}</td>
+            <td class="cell-num">
+              <span class="qty" [class.qty--low]="riga.quantita <= 3">{{ riga.quantita }}</span>
+            </td>
+            <td class="cell-num">{{ riga.libro.anno }}</td>
+            <td class="cell-action">
+              <div class="row-actions">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Modifica"
+                  [ariaLabel]="'Modifica ' + riga.libro.titolo"
+                  (onClick)="openEdit(riga)"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Elimina"
+                  [loading]="deleting() === riga.id"
+                  [ariaLabel]="'Elimina ' + riga.libro.titolo"
+                  (onClick)="delete(riga)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">
+              @if (!magazzino.isLoading()) {
+                <app-empty-state
+                  icon="pi pi-box"
+                  title="Magazzino vuoto"
+                  message="Aggiungi un libro esistente per iniziare a tracciarne le copie."
+                />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 
   <app-magazzino-dialog
     [visible]="dialogVisible()"

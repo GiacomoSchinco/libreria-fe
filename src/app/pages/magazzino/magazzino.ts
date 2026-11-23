@@ -1,21 +1,25 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { Tooltip } from 'primeng/tooltip';
 
 import { MagazzinoService } from '../../services/magazzino';
 import { CasaEditriceService } from '../../services/casa-editrice';
 import { ConfirmDialogService } from '../../services/confirm-dialog';
 import { NotificationService } from '../../services/notification';
 import { MagazzinoDialogComponent } from '../../components/magazzino-dialog/magazzino-dialog';
+import { PageHeader } from '../../components/page-header/page-header';
+import { EmptyState } from '../../components/empty-state/empty-state';
 import { Magazzino as MagazzinoModel, MagazzinoRequest } from '../../interfaces/magazzino';
 
 @Component({
   selector: 'app-magazzino',
-  imports: [Button, TableModule, MagazzinoDialogComponent],
+  imports: [Button, TableModule, Tooltip, MagazzinoDialogComponent, PageHeader, EmptyState],
   templateUrl: './magazzino.html',
   styleUrl: './magazzino.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Magazzino {
   private readonly magazzinoService = inject(MagazzinoService);
@@ -38,8 +42,21 @@ export class Magazzino {
   });
 
   protected readonly caseEditriciOptions = rxResource({
-    stream: () => this.casaEditriceService.getAll(),
+    params: () => this.dialogVisible(),
+    stream: ({ params: open }) => (open ? this.casaEditriceService.getAll() : of([])),
   });
+
+  protected readonly subtitle = computed(() => {
+    const total = this.magazzino.value()?.page?.totalElements;
+    if (total === undefined) {
+      return 'Tutti i libri in magazzino.';
+    }
+    return total === 1 ? '1 riga di magazzino.' : `${total} righe di magazzino.`;
+  });
+
+  protected initial(text: string | undefined): string {
+    return text?.trim().charAt(0).toUpperCase() || '?';
+  }
 
   protected onPage(event: { first: number; rows: number }): void {
     this.pageSize.set(event.rows);

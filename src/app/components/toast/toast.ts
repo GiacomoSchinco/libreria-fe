@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Toast } from 'primeng/toast';
 
 /**
@@ -10,5 +10,6 @@ import { Toast } from 'primeng/toast';
   imports: [Toast],
   templateUrl: './toast.html',
   styleUrl: './toast.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent {}

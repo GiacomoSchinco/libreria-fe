@@ -1,11 +1,15 @@
-<app-topbar />
+<a class="skip-link" href="#contenuto">Salta al contenuto</a>
+
+<app-topbar [showMenu]="showSidebar()" />
 
 @if (showSidebar()) {
   <app-sidebar>
     <router-outlet />
   </app-sidebar>
 } @else {
-  <router-outlet />
+  <main id="contenuto" class="guest-main">
+    <router-outlet />
+  </main>
 }
 
 <app-confirm-dialog />

@@ -1,60 +1,79 @@
 <section class="page">
-  <header class="page__header">
-    <div>
-      <h1>Case editrici</h1>
-      <p>Tutte le case editrici registrate.</p>
-    </div>
+  <app-page-header title="Case editrici" [subtitle]="subtitle()" icon="pi pi-building">
     <p-button label="Nuova casa editrice" icon="pi pi-plus" (onClick)="openCreate()" />
-  </header>
+  </app-page-header>
+
   @if (caseEditrici.error()) {
-    <p class="error">Errore nel caricamento delle Case editrici.</p>
+    <p class="inline-error">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      <span>Errore nel caricamento delle case editrici.</span>
+      <p-button label="Riprova" size="small" [text]="true" (onClick)="caseEditrici.reload()" />
+    </p>
   }
-  @if (caseEditrici.value()) {
-    <p-table
-      [value]="caseEditrici.value() ?? []"
-      [loading]="caseEditrici.isLoading()"
-      dataKey="id"
-      [tableStyle]="{ 'min-width': '26rem' }"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Nome</th>
-          <th></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-casaEditrice>
-        <tr>
-          <td>{{ casaEditrice.nome }}</td>
-          <td>
-            <div class="row-actions">
-              <p-button
-                icon="pi pi-pencil"
-                severity="secondary"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'Modifica ' + casaEditrice.nome"
-                (onClick)="openEdit(casaEditrice)"
-              />
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [loading]="deleting() === casaEditrice.id"
-                [ariaLabel]="'Elimina ' + casaEditrice.nome"
-                (onClick)="delete(casaEditrice)"
-              />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="2">Nessuna casa editrice trovata.</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  }
+
+  <div class="card table-card">
+    <div class="table-scroll">
+      <p-table
+        [value]="caseEditrici.value() ?? []"
+        [loading]="caseEditrici.isLoading()"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '24rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Casa editrice</th>
+            <th aria-label="Azioni"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-casaEditrice>
+          <tr>
+            <td>
+              <div class="named">
+                <span class="named__icon" aria-hidden="true"><i class="pi pi-building"></i></span>
+                <span class="cell-title">{{ casaEditrice.nome }}</span>
+              </div>
+            </td>
+            <td class="cell-action">
+              <div class="row-actions">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Modifica"
+                  [ariaLabel]="'Modifica ' + casaEditrice.nome"
+                  (onClick)="openEdit(casaEditrice)"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Elimina"
+                  [loading]="deleting() === casaEditrice.id"
+                  [ariaLabel]="'Elimina ' + casaEditrice.nome"
+                  (onClick)="delete(casaEditrice)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="2">
+              @if (!caseEditrici.isLoading()) {
+                <app-empty-state
+                  icon="pi pi-building"
+                  title="Nessuna casa editrice"
+                  message="Registra le case editrici da associare alle righe di magazzino."
+                />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 
   <app-nome-dialog
     [visible]="dialogVisible()"

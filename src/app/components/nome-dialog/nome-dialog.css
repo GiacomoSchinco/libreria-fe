@@ -4,7 +4,9 @@
 }
 
 .nome-dialog__label {
-  font-weight: 500;
+  color: var(--app-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 .nome-dialog__input {

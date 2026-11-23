@@ -1,11 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8">
-  <title>LibreriaFe</title>
+  <title>Libreria · Catalogo online</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gestione del catalogo librario: libri, autori, generi, case editrici e magazzino.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f8f7f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f151f" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // Applica il tema prima del bootstrap per evitare il flash chiaro/scuro.
+    (() => {
+      try {
+        const stored = localStorage.getItem('libreria-theme');
+        const dark = stored
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) {
+          document.documentElement.classList.add('p-dark');
+        }
+      } catch {
+        /* storage non disponibile: resta il tema chiaro */
+      }
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

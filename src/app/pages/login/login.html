@@ -1,62 +1,85 @@
 <section class="login">
   <div class="login__card">
-    <header class="login__header">
-      <h2>Accedi</h2>
-      <p>Inserisci username e password.</p>
-    </header>
+    <aside class="login__brand">
+      <app-brand />
 
-    @if (errorMessage(); as message) {
-      <p class="login__error" role="alert">{{ message }}</p>
-    }
+      <div class="login__pitch">
+        <h2 class="login__headline">Il tuo catalogo,<br />sempre in ordine.</h2>
+        <p class="login__lead">Libri, autori, generi e magazzino in un'unica vista.</p>
 
-    <form class="login__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <div class="field">
-        <label class="field__label" for="username">Username</label>
-        <input
-          pInputText
-          id="username"
-          class="field__input"
-          type="text"
-          formControlName="username"
-          autocomplete="username"
-          [class.field__input--invalid]="usernameError() !== null"
-        />
-        @if (usernameError(); as message) {
-          <small class="field__error">{{ message }}</small>
-        }
+        <ul class="login__features">
+          <li><i class="pi pi-check-circle" aria-hidden="true"></i> Catalogo e schede libro</li>
+          <li><i class="pi pi-check-circle" aria-hidden="true"></i> Giacenze di magazzino</li>
+          <li><i class="pi pi-check-circle" aria-hidden="true"></i> Anagrafiche collegate</li>
+        </ul>
       </div>
 
-      <div class="field">
-        <label class="field__label" for="password">Password</label>
-        <div class="field__password">
+      <p class="login__footnote">Accesso riservato al personale.</p>
+    </aside>
+
+    <div class="login__panel">
+      <header class="login__header">
+        <h1 class="login__title">Accedi</h1>
+        <p class="login__hint">Inserisci username e password per continuare.</p>
+      </header>
+
+      @if (errorMessage(); as message) {
+        <p class="login__error" role="alert">
+          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+          {{ message }}
+        </p>
+      }
+
+      <form class="login__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label class="field__label" for="username">Username</label>
           <input
             pInputText
-            id="password"
-            class="field__input field__input--with-toggle"
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-            autocomplete="current-password"
-            [class.field__input--invalid]="passwordError() !== null"
+            id="username"
+            class="field__input"
+            type="text"
+            formControlName="username"
+            autocomplete="username"
+            autofocus
+            [class.field__input--invalid]="usernameError() !== null"
           />
-          <button
-            pButton
-            text
-            rounded
-            severity="secondary"
-            type="button"
-            class="field__password-toggle"
-            [icon]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"
-            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
-            [attr.aria-pressed]="showPassword()"
-            (click)="togglePassword()"
-          ></button>
+          @if (usernameError(); as message) {
+            <small class="field__error">{{ message }}</small>
+          }
         </div>
-        @if (passwordError(); as message) {
-          <small class="field__error">{{ message }}</small>
-        }
-      </div>
 
-      <button pButton type="submit" class="submit" [loading]="isLoading()">Accedi</button>
-    </form>
+        <div class="field">
+          <label class="field__label" for="password">Password</label>
+          <div class="field__password">
+            <input
+              pInputText
+              id="password"
+              class="field__input field__input--with-toggle"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="current-password"
+              [class.field__input--invalid]="passwordError() !== null"
+            />
+            <button
+              pButton
+              text
+              rounded
+              severity="secondary"
+              type="button"
+              class="field__password-toggle"
+              [icon]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"
+              [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+              [attr.aria-pressed]="showPassword()"
+              (click)="togglePassword()"
+            ></button>
+          </div>
+          @if (passwordError(); as message) {
+            <small class="field__error">{{ message }}</small>
+          }
+        </div>
+
+        <button pButton type="submit" class="submit" [loading]="isLoading()" label="Accedi"></button>
+      </form>
+    </div>
   </div>
 </section>

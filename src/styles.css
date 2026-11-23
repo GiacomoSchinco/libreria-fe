@@ -1,6 +1,60 @@
 @import 'tailwindcss';
 @import 'primeicons/primeicons.css';
 
+/* ---------------------------------------------------------------------------
+   Design tokens
+   I colori "app-*" non seguono i token surface di PrimeNG (che in dark mode
+   restano chiari): vanno quindi definiti per entrambi gli schemi.
+--------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  --app-topbar-height: 3.75rem;
+  --app-sidebar-width: 16.5rem;
+  --app-sidebar-rail: 4.75rem;
+  --app-content-max: 80rem;
+  --app-radius: 14px;
+  --app-radius-sm: 10px;
+  --app-radius-xs: 8px;
+
+  --app-bg: #f8f7f4;
+  --app-panel: #ffffff;
+  --app-panel-muted: #f3f2ee;
+  --app-border: #e6e4de;
+  --app-border-strong: #d6d3cb;
+  --app-text: #1b1a17;
+  --app-text-muted: #5f5d56;
+  --app-topbar-bg: rgb(255 255 255 / 82%);
+  --app-sidebar-bg: #fbfaf8;
+
+  --app-shadow-xs: 0 1px 2px rgb(28 26 23 / 6%);
+  --app-shadow-sm: 0 1px 2px rgb(28 26 23 / 5%), 0 8px 20px -16px rgb(28 26 23 / 30%);
+  --app-shadow-md: 0 24px 48px -32px rgb(28 26 23 / 45%), 0 4px 12px -8px rgb(28 26 23 / 18%);
+  --app-shadow-brand: 0 12px 24px -14px var(--p-primary-color);
+  --app-gradient-brand: linear-gradient(135deg, var(--p-primary-400), var(--p-primary-700));
+}
+
+html.p-dark {
+  color-scheme: dark;
+
+  --app-bg: #0f151f;
+  --app-panel: #171f2b;
+  --app-panel-muted: #1b2431;
+  --app-border: #232c3a;
+  --app-border-strong: #364255;
+  --app-text: #eef2f7;
+  --app-text-muted: #9aa5b5;
+  --app-topbar-bg: rgb(15 21 31 / 82%);
+  --app-sidebar-bg: #121924;
+
+  --app-shadow-xs: 0 1px 2px rgb(0 0 0 / 40%);
+  --app-shadow-sm: 0 1px 2px rgb(0 0 0 / 35%), 0 10px 24px -18px rgb(0 0 0 / 70%);
+  --app-shadow-md: 0 28px 56px -32px rgb(0 0 0 / 85%), 0 6px 16px -10px rgb(0 0 0 / 60%);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
 html,
 body {
   min-height: 100%;
@@ -8,39 +62,314 @@ body {
 
 body {
   margin: 0;
-  background: var(--p-surface-50, #fafafa);
-  color: var(--p-text-color, rgb(0 0 0 / 87%));
+  background-color: var(--app-bg);
+  color: var(--app-text);
   font-family:
-    Roboto,
+    'Inter var',
+    Inter,
     system-ui,
     -apple-system,
     'Segoe UI',
+    Roboto,
     'Helvetica Neue',
     Arial,
     sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3 {
+  letter-spacing: -0.015em;
+}
+
+a:not(.p-button):not(.nav__link):not(.cell-link) {
+  color: var(--p-primary-color);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--p-primary-color), transparent 78%);
+}
+
+:focus-visible {
+  outline: 2px solid var(--p-primary-color);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border-strong) transparent;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  border-radius: var(--app-radius-sm);
+  background: var(--p-primary-color);
+  color: var(--p-primary-contrast-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: calc(var(--app-topbar-height) + 0.5rem);
+}
+
+/* ---------------------------------------------------------------------------
+   Page scaffolding
+--------------------------------------------------------------------------- */
 .page {
   display: grid;
-  gap: 1.25rem;
-  max-width: 72rem;
+  gap: 1.5rem;
+  max-width: var(--app-content-max);
   margin: 0 auto;
-  padding: 2rem 1.25rem;
+  padding: 2rem clamp(1rem, 2.5vw, 2.25rem) 3rem;
 }
 
-.page__header h1 {
+.card {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--app-panel);
+  box-shadow: var(--app-shadow-sm);
+  overflow: hidden;
+}
+
+.card--padded {
+  padding: clamp(1rem, 2vw, 1.75rem);
+}
+
+.muted {
+  color: var(--app-text-muted);
+}
+
+.inline-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   margin: 0;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  line-height: 1.1;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--p-red-500), transparent 55%);
+  border-radius: var(--app-radius-sm);
+  background: color-mix(in srgb, var(--p-red-500), transparent 92%);
+  color: var(--p-red-700);
+  font-size: 0.875rem;
 }
 
-.page__header p {
-  margin: 0.25rem 0 0;
-  color: var(--p-text-muted-color);
+html.p-dark .inline-error {
+  color: var(--p-red-300);
 }
 
-.error {
-  margin: 0;
-  color: var(--p-form-field-invalid-border-color, #b3261e);
+.inline-error i {
+  font-size: 1rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Tables
+--------------------------------------------------------------------------- */
+body .table-card .p-datatable {
+  border: 0;
+}
+
+body .table-card .p-datatable-thead > tr > th {
+  padding: 0.7rem 1.1rem;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-panel-muted);
+  color: var(--app-text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+body .table-card .p-datatable-tbody > tr > td {
+  padding: 0.8rem 1.1rem;
+  border-color: var(--app-border);
+  vertical-align: middle;
+}
+
+body .table-card .p-datatable-tbody > tr {
+  transition: background-color 0.15s ease;
+}
+
+body .table-card .p-datatable-tbody > tr:hover {
+  background: color-mix(in srgb, var(--p-primary-color), transparent 96%);
+}
+
+body .table-card .p-datatable-tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+body .table-card .p-paginator {
+  padding: 0.55rem 0.85rem;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-panel);
+}
+
+body .table-card .p-paginator .p-paginator-page,
+body .table-card .p-paginator .p-paginator-next,
+body .table-card .p-paginator .p-paginator-prev,
+body .table-card .p-paginator .p-paginator-first,
+body .table-card .p-paginator .p-paginator-last {
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: var(--app-radius-xs);
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.15rem;
+}
+
+.cell-action {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.cell-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cell-title {
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.cell-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cell-link:hover .cell-title {
+  color: var(--p-primary-color);
+}
+
+.stack {
+  display: grid;
+  gap: 0.15rem;
+}
+
+/* Celle riutilizzate dalle liste */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.book-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.book-cell__cover {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.9rem;
+  height: 2.5rem;
+  border-radius: 0.35rem;
+  background: var(--app-gradient-brand);
+  box-shadow: var(--app-shadow-xs);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.person__avatar {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--p-primary-color), transparent 88%);
+  color: var(--p-primary-700);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+html.p-dark .person__avatar {
+  color: var(--p-primary-200);
+}
+
+.named {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.named__icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: var(--app-radius-xs);
+  background: var(--app-panel-muted);
+  color: var(--app-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------------------
+   PrimeNG fine tuning
+--------------------------------------------------------------------------- */
+body .p-dialog {
+  max-width: calc(100vw - 2rem);
+  border-radius: var(--app-radius);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-md);
+}
+
+body .p-dialog .p-dialog-header {
+  padding: 1.15rem 1.4rem 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+body .p-dialog .p-dialog-content {
+  padding: 0.5rem 1.4rem 1.15rem;
+}
+
+body .p-dialog .p-dialog-footer {
+  padding: 1rem 1.4rem 1.3rem;
+}
+
+body .p-toast .p-toast-message {
+  border-radius: var(--app-radius-sm);
+  box-shadow: var(--app-shadow-md);
+}
+
+.p-button {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

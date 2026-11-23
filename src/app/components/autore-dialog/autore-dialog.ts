@@ -1,4 +1,14 @@
-import { Component, computed, effect, inject, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { Button } from 'primeng/button';
@@ -22,6 +32,7 @@ import { NomeDialogComponent } from '../nome-dialog/nome-dialog';
   imports: [Dialog, InputText, Select, DatePicker, Button, FormsModule, NomeDialogComponent],
   templateUrl: './autore-dialog.html',
   styleUrl: './autore-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutoreDialogComponent {
   private readonly nazionalitaService = inject(NazionalitaService);
