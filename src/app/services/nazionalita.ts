@@ -22,4 +22,9 @@ export class NazionalitaService {
   getById(id: number): Observable<Nazionalita> {
     return this.http.get<Nazionalita>(`${API_URL}/${id}`);
   }
+
+  /** DELETE /api/nazionalita/{id} */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/${id}`);
+  }
 }

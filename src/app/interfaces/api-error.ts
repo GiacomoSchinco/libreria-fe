@@ -2,7 +2,7 @@
 export interface ApiError {
   timestamp: string;
   status: number;
-  reason: string;
+  error: string;
   message: string;
   path: string;
 }

@@ -3,10 +3,12 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Topbar } from './components/topbar/topbar';
 import { Sidebar } from './components/sidebar/sidebar';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog';
+import { ToastComponent } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Topbar, Sidebar],
+  imports: [RouterOutlet, Topbar, Sidebar, ConfirmDialogComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

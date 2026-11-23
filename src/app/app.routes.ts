@@ -39,5 +39,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/autori/autori').then((m) => m.Autori),
   },
+  {
+    path: 'generi',
+    title: 'Libreria · Generi',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/generi/generi').then((m) => m.Generi),
+  },
+  {
+    path: 'nazionalita',
+    title: 'Libreria · Nazionalità',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/nazionalita/nazionalita').then((m) => m.Nazionalita),
+  },
   { path: '**', redirectTo: '' },
 ];

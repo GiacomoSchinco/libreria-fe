@@ -22,4 +22,9 @@ export class GenereService {
   getById(id: number): Observable<Genere> {
     return this.http.get<Genere>(`${API_URL}/${id}`);
   }
+
+  /** DELETE /api/generi/{id} */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/${id}`);
+  }
 }

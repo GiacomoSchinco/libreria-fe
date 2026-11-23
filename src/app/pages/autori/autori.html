@@ -1,1 +1,44 @@
-<p>autori works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1>Autori</h1>
+    <p>Tutti gli autori registrati.</p>
+  </header>
+    @if (autori.error()) {
+        <p class="error">Errore nel caricamento degli Autori.</p>
+    }
+    @if (autori.value()) {
+        <p-table
+            [value]="autori.value()?.content ?? []"
+            [lazy]="true"
+            [paginator]="true"
+            [rows]="pageSize()"
+            [first]="pageIndex() * pageSize()"
+            [totalRecords]="autori.value()?.page?.totalElements ?? 0"
+            [loading]="autori.isLoading()"
+            dataKey="id"
+            [tableStyle]="{ 'min-width': '44rem' }"
+            (onPage)="onPage($event)"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Data di nascita</th>
+                    <th>Nazionalità</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-autore>
+                <tr>
+                    <td>{{ autore.nome }}</td>
+                    <td>{{ autore.cognome }}</td>
+                    <td>{{ autore.dataNascita }}</td>
+                    <td>{{ autore.nazionalita.nome }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4">Nessun autore trovato.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }

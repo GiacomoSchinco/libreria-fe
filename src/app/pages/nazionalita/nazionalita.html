@@ -1,0 +1,45 @@
+<section class="page">
+  <header class="page__header">
+    <h1>Nazionalità</h1>
+    <p>Tutte le nazionalità registrate.</p>
+  </header>
+  @if (nazionalita.error()) {
+    <p class="error">Errore nel caricamento delle Nazionalità.</p>
+  }
+  @if (nazionalita.value()) {
+    <p-table
+      [value]="nazionalita.value() ?? []"
+      [loading]="nazionalita.isLoading()"
+      dataKey="id"
+      [tableStyle]="{ 'min-width': '26rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-nazionalita>
+        <tr>
+          <td>{{ nazionalita.nome }}</td>
+          <td>
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              [loading]="deleting() === nazionalita.id"
+              [ariaLabel]="'Elimina ' + nazionalita.nome"
+              (onClick)="delete(nazionalita)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="2">Nessuna nazionalità trovata.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</section>

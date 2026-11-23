@@ -28,6 +28,8 @@ export class Sidebar {
       icon: 'pi pi-cog',
       items: [
         { label: 'Autori', icon: 'pi pi-users', routerLink: ['/autori'] },
+        { label: 'Generi', icon: 'pi pi-tags', routerLink: ['/generi'] },
+        { label: 'Nazionalità', icon: 'pi pi-globe', routerLink: ['/nazionalita'] },
       ],
     },
   ];
