@@ -28,7 +28,9 @@
           <h1 class="book__title">{{ dettaglio.titolo }}</h1>
 
           <div class="book__meta">
-            <p-tag [value]="dettaglio.genere.nome" severity="info" rounded />
+            @if (dettaglio.genere) {
+              <p-tag [value]="dettaglio.genere.nome" severity="info" rounded />
+            }
             <span class="book__year">Prima edizione {{ dettaglio.anno }}</span>
           </div>
         </div>
@@ -43,7 +45,7 @@
         </div>
         <div class="facts__item">
           <dt>Genere</dt>
-          <dd>{{ dettaglio.genere.nome }}</dd>
+          <dd>{{ dettaglio.genere?.nome ?? '—' }}</dd>
         </div>
         <div class="facts__item">
           <dt>Autori</dt>

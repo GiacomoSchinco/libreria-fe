@@ -1,0 +1,69 @@
+<section class="page">
+  <header class="page__header">
+    <div>
+      <h1>Case editrici</h1>
+      <p>Tutte le case editrici registrate.</p>
+    </div>
+    <p-button label="Nuova casa editrice" icon="pi pi-plus" (onClick)="openCreate()" />
+  </header>
+  @if (caseEditrici.error()) {
+    <p class="error">Errore nel caricamento delle Case editrici.</p>
+  }
+  @if (caseEditrici.value()) {
+    <p-table
+      [value]="caseEditrici.value() ?? []"
+      [loading]="caseEditrici.isLoading()"
+      dataKey="id"
+      [tableStyle]="{ 'min-width': '26rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-casaEditrice>
+        <tr>
+          <td>{{ casaEditrice.nome }}</td>
+          <td>
+            <div class="row-actions">
+              <p-button
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'Modifica ' + casaEditrice.nome"
+                (onClick)="openEdit(casaEditrice)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [loading]="deleting() === casaEditrice.id"
+                [ariaLabel]="'Elimina ' + casaEditrice.nome"
+                (onClick)="delete(casaEditrice)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="2">Nessuna casa editrice trovata.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+
+  <app-nome-dialog
+    [visible]="dialogVisible()"
+    (visibleChange)="onDialogVisibleChange($event)"
+    [header]="editing() ? 'Modifica casa editrice' : 'Nuova casa editrice'"
+    label="Nome della casa editrice"
+    placeholder="es. Mondadori"
+    [value]="editing()?.nome ?? ''"
+    [saving]="saving()"
+    (save)="save($event)"
+  />
+</section>

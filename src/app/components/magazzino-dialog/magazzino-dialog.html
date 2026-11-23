@@ -1,0 +1,88 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [header]="header()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '32rem' }"
+  [closable]="!saving()"
+  [closeOnEscape]="!saving()"
+>
+  <form class="magazzino-dialog__form" (ngSubmit)="submit()">
+    <div class="magazzino-dialog__field">
+      <label for="magazzino-libro">Libro</label>
+      <p-autocomplete
+        inputId="magazzino-libro"
+        name="libro"
+        optionLabel="titolo"
+        placeholder="Cerca per titolo"
+        [suggestions]="suggerimenti()"
+        (completeMethod)="cerca($event)"
+        [minLength]="minRicerca"
+        [delay]="300"
+        [dropdown]="true"
+        [forceSelection]="true"
+        [ngModel]="libro()"
+        (ngModelChange)="libro.set($event)"
+        [disabled]="saving()"
+        appendTo="body"
+      />
+      <small class="magazzino-dialog__hint">
+        Digita almeno {{ minRicerca }} caratteri del titolo.
+      </small>
+    </div>
+
+    <div class="magazzino-dialog__field">
+      <label for="magazzino-quantita">Quantità</label>
+      <p-inputnumber
+        inputId="magazzino-quantita"
+        name="quantita"
+        [min]="1"
+        [max]="9999"
+        [showButtons]="true"
+        [useGrouping]="false"
+        [ngModel]="quantita()"
+        (ngModelChange)="quantita.set($event)"
+        [disabled]="saving()"
+      />
+    </div>
+
+    <div class="magazzino-dialog__field">
+      <label for="magazzino-casa-editrice">Casa editrice</label>
+      <p-select
+        inputId="magazzino-casa-editrice"
+        name="casaEditrice"
+        placeholder="Nessuna casa editrice"
+        [options]="caseEditrici()"
+        optionLabel="nome"
+        optionValue="id"
+        [filter]="true"
+        [showClear]="true"
+        [ngModel]="idCasaEditrice()"
+        (ngModelChange)="idCasaEditrice.set($event)"
+        [disabled]="saving()"
+        appendTo="body"
+      />
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <div class="magazzino-dialog__actions">
+      <p-button
+        label="Annulla"
+        severity="secondary"
+        [text]="true"
+        [disabled]="saving()"
+        (onClick)="visible.set(false)"
+      />
+      <p-button
+        label="Salva"
+        icon="pi pi-check"
+        [loading]="saving()"
+        [disabled]="!valid()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

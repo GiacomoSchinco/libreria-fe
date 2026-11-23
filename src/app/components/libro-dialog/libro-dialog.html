@@ -1,0 +1,159 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [header]="header()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '36rem' }"
+  [closable]="!saving()"
+  [closeOnEscape]="!saving()"
+>
+  <form class="libro-dialog__form" (ngSubmit)="submit()">
+    <div class="libro-dialog__field">
+      <label for="libro-titolo">Titolo</label>
+      <input
+        id="libro-titolo"
+        pInputText
+        name="titolo"
+        autocomplete="off"
+        maxlength="255"
+        [ngModel]="titolo()"
+        (ngModelChange)="titolo.set($event)"
+        [disabled]="saving()"
+      />
+    </div>
+
+    <div class="libro-dialog__field">
+      <label for="libro-anno">Anno</label>
+      <p-inputnumber
+        inputId="libro-anno"
+        name="anno"
+        [min]="0"
+        [max]="2100"
+        [useGrouping]="false"
+        [ngModel]="anno()"
+        (ngModelChange)="anno.set($event)"
+        [disabled]="saving()"
+      />
+    </div>
+
+    <div class="libro-dialog__field">
+      <span class="libro-dialog__label">Genere</span>
+      <p-selectbutton
+        name="modoGenere"
+        [options]="genereModes"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        [ngModel]="modoGenere()"
+        (ngModelChange)="modoGenere.set($event)"
+        [disabled]="saving()"
+      />
+      @if (modoGenere() === 'esistente') {
+        <p-select
+          inputId="libro-genere"
+          name="genere"
+          placeholder="Nessun genere"
+          [options]="generi()"
+          optionLabel="nome"
+          optionValue="id"
+          [filter]="true"
+          [showClear]="true"
+          [ngModel]="idGenere()"
+          (ngModelChange)="idGenere.set($event)"
+          [disabled]="saving()"
+          appendTo="body"
+        />
+      } @else {
+        <input
+          id="libro-nome-genere"
+          pInputText
+          name="nomeGenere"
+          autocomplete="off"
+          maxlength="100"
+          placeholder="es. Distopia"
+          [ngModel]="nomeGenere()"
+          (ngModelChange)="nomeGenere.set($event)"
+          [disabled]="saving()"
+        />
+      }
+    </div>
+
+    <div class="libro-dialog__field">
+      <label for="libro-autori">Autori esistenti</label>
+      <p-multiselect
+        inputId="libro-autori"
+        name="autori"
+        placeholder="Nessun autore selezionato"
+        display="chip"
+        [maxSelectedLabels]="3"
+        [options]="autoriOptions()"
+        optionLabel="label"
+        optionValue="id"
+        [filter]="true"
+        [ngModel]="idAutori()"
+        (ngModelChange)="idAutori.set($event)"
+        [disabled]="saving()"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="libro-dialog__field">
+      <div class="libro-dialog__row">
+        <span class="libro-dialog__label">Nuovi autori</span>
+        <p-button
+          label="Aggiungi autore"
+          icon="pi pi-user-plus"
+          size="small"
+          [text]="true"
+          [disabled]="saving()"
+          (onClick)="apriNuovoAutore()"
+        />
+      </div>
+      @if (nuoviAutori().length > 0) {
+        <div class="libro-dialog__chips">
+          @for (autore of nuoviAutori(); track $index) {
+            <p-chip
+              [label]="autore.nome + ' ' + autore.cognome"
+              [removable]="true"
+              (onRemove)="rimuoviNuovoAutore($index)"
+            />
+          }
+        </div>
+      } @else {
+        <small class="libro-dialog__hint">
+          Gli autori non ancora presenti possono essere creati da qui.
+        </small>
+      }
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <div class="libro-dialog__actions">
+      <p-button
+        label="Annulla"
+        severity="secondary"
+        [text]="true"
+        [disabled]="saving()"
+        (onClick)="visible.set(false)"
+      />
+      <p-button
+        label="Salva"
+        icon="pi pi-check"
+        [loading]="saving()"
+        [disabled]="!valid()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<app-autore-dialog
+  [visible]="nuovoAutoreVisible()"
+  (visibleChange)="nuovoAutoreVisible.set($event)"
+  [autore]="null"
+  [nazionalita]="nazionalita()"
+  (save)="aggiungiNuovoAutore($event)"
+  (nazionalitaCreata)="nazionalitaCreata.emit($event)"
+/>

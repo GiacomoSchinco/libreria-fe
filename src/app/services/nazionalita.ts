@@ -27,4 +27,14 @@ export class NazionalitaService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${API_URL}/${id}`);
   }
+
+  /** POST /api/nazionalita */
+  create(nome: string): Observable<Nazionalita> {
+    return this.http.post<Nazionalita>(API_URL, { nome });
+  }
+
+  /** PUT /api/nazionalita/{id} */
+  update(id: number, nome: string): Observable<Nazionalita> {
+    return this.http.put<Nazionalita>(`${API_URL}/${id}`, { nome });
+  }
 }

@@ -1,7 +1,10 @@
 <section class="page">
   <header class="page__header">
-    <h1>Nazionalità</h1>
-    <p>Tutte le nazionalità registrate.</p>
+    <div>
+      <h1>Nazionalità</h1>
+      <p>Tutte le nazionalità registrate.</p>
+    </div>
+    <p-button label="Nuova nazionalità" icon="pi pi-plus" (onClick)="openCreate()" />
   </header>
   @if (nazionalita.error()) {
     <p class="error">Errore nel caricamento delle Nazionalità.</p>
@@ -23,15 +26,25 @@
         <tr>
           <td>{{ nazionalita.nome }}</td>
           <td>
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              [text]="true"
-              [rounded]="true"
-              [loading]="deleting() === nazionalita.id"
-              [ariaLabel]="'Elimina ' + nazionalita.nome"
-              (onClick)="delete(nazionalita)"
-            />
+            <div class="row-actions">
+              <p-button
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'Modifica ' + nazionalita.nome"
+                (onClick)="openEdit(nazionalita)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [loading]="deleting() === nazionalita.id"
+                [ariaLabel]="'Elimina ' + nazionalita.nome"
+                (onClick)="delete(nazionalita)"
+              />
+            </div>
           </td>
         </tr>
       </ng-template>
@@ -42,4 +55,15 @@
       </ng-template>
     </p-table>
   }
+
+  <app-nome-dialog
+    [visible]="dialogVisible()"
+    (visibleChange)="onDialogVisibleChange($event)"
+    [header]="editing() ? 'Modifica nazionalità' : 'Nuova nazionalità'"
+    label="Nome della nazionalità"
+    placeholder="es. Portogallo"
+    [value]="editing()?.nome ?? ''"
+    [saving]="saving()"
+    (save)="save($event)"
+  />
 </section>

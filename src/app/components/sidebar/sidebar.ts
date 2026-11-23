@@ -30,6 +30,7 @@ export class Sidebar {
         { label: 'Autori', icon: 'pi pi-users', routerLink: ['/autori'] },
         { label: 'Generi', icon: 'pi pi-tags', routerLink: ['/generi'] },
         { label: 'Nazionalità', icon: 'pi pi-globe', routerLink: ['/nazionalita'] },
+        { label: 'Case editrici', icon: 'pi pi-building', routerLink: ['/case-editrici'] },
       ],
     },
   ];

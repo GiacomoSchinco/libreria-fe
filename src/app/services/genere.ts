@@ -27,4 +27,14 @@ export class GenereService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${API_URL}/${id}`);
   }
+
+  /** POST /api/generi */
+  create(nome: string): Observable<Genere> {
+    return this.http.post<Genere>(API_URL, { nome });
+  }
+
+  /** PUT /api/generi/{id} */
+  update(id: number, nome: string): Observable<Genere> {
+    return this.http.put<Genere>(`${API_URL}/${id}`, { nome });
+  }
 }

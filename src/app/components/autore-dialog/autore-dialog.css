@@ -1,0 +1,37 @@
+.autore-dialog__form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.autore-dialog__field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.autore-dialog__field > label {
+  font-weight: 500;
+}
+
+.autore-dialog__field input {
+  width: 100%;
+}
+
+.autore-dialog__field p-datepicker,
+.autore-dialog__field p-select {
+  width: 100%;
+}
+
+.autore-dialog__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.autore-dialog__row p-select {
+  flex: 1;
+}
+
+.autore-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

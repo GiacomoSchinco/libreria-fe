@@ -1,0 +1,18 @@
+.nome-dialog__form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.nome-dialog__label {
+  font-weight: 500;
+}
+
+.nome-dialog__input {
+  width: 100%;
+}
+
+.nome-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

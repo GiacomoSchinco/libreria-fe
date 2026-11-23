@@ -1,7 +1,10 @@
 <section class="page">
   <header class="page__header">
-    <h1>Libri</h1>
-    <p>Tutti i volumi del catalogo.</p>
+    <div>
+      <h1>Libri</h1>
+      <p>Tutti i volumi del catalogo.</p>
+    </div>
+    <p-button label="Nuovo libro" icon="pi pi-plus" (onClick)="openCreate()" />
   </header>
 
   @if (libri.error()) {
@@ -37,10 +40,26 @@
             <span>{{autore.nome}} {{ autore.cognome }}{{ $last ? '' : ', ' }}</span>
           }
         </td>
-        <td><p-tag [value]="libro.genere.nome" severity="secondary" /></td>
+        <td>
+          @if (libro.genere) {
+            <p-tag [value]="libro.genere.nome" severity="secondary" />
+          } @else {
+            <span>—</span>
+          }
+        </td>
         <td>{{ libro.anno }}</td>
         <td class="cell-action">
-          <a pButton text size="small" [routerLink]="['/libri', libro.id]">Dettaglio</a>
+          <div class="row-actions">
+            <p-button
+              icon="pi pi-pencil"
+              severity="secondary"
+              [text]="true"
+              [rounded]="true"
+              [ariaLabel]="'Modifica ' + libro.titolo"
+              (onClick)="openEdit(libro)"
+            />
+            <a pButton text size="small" [routerLink]="['/libri', libro.id]">Dettaglio</a>
+          </div>
         </td>
       </tr>
     </ng-template>
@@ -50,4 +69,16 @@
       </tr>
     </ng-template>
   </p-table>
+
+  <app-libro-dialog
+    [visible]="dialogVisible()"
+    (visibleChange)="onDialogVisibleChange($event)"
+    [libro]="editing()"
+    [generi]="generiOptions.value() ?? []"
+    [autori]="autoriOptions.value() ?? []"
+    [nazionalita]="nazionalitaOptions.value() ?? []"
+    [saving]="saving()"
+    (save)="save($event)"
+    (nazionalitaCreata)="onNazionalitaCreata()"
+  />
 </section>

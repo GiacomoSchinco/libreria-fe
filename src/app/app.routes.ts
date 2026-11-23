@@ -51,5 +51,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/nazionalita/nazionalita').then((m) => m.Nazionalita),
   },
+  {
+    path: 'case-editrici',
+    title: 'Libreria · Case editrici',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/case-editrici/case-editrici').then((m) => m.CaseEditrici),
+  },
   { path: '**', redirectTo: '' },
 ];

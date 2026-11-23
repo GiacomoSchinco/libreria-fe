@@ -1,46 +1,81 @@
 <section class="page">
   <header class="page__header">
-    <h1>Magazzino</h1>
-    <p>Tutti i libri in magazzino.</p>
+    <div>
+      <h1>Magazzino</h1>
+      <p>Tutti i libri in magazzino.</p>
+    </div>
+    <p-button label="Aggiungi libro" icon="pi pi-plus" (onClick)="openCreate()" />
   </header>
+
   @if (magazzino.error()) {
-    <p class="error">Errore nel caricamento dei Magazzino.</p>
+    <p class="error">Errore nel caricamento del Magazzino.</p>
   }
 
-  <p-table
-    [value]="magazzino.value()?.content ?? []"
-    [lazy]="true"
-    [paginator]="true"
-    [rows]="pageSize()"
-    [first]="pageIndex() * pageSize()"
-    [totalRecords]="magazzino.value()?.page?.totalElements ?? 0"
-    [loading]="magazzino.isLoading()"
-    dataKey="id"
-    [tableStyle]="{ 'min-width': '44rem' }"
-    (onPage)="onPage($event)"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Titolo</th>
-        <th>Casa Editrice</th>
-        <th>Quantità</th>
-        <th>Anno</th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-magazzino>
-      <tr>
-        <td>{{ magazzino.libro.titolo }}</td>
-        <td>{{ magazzino.casaEditrice.nome }}</td>
-        <td>{{ magazzino.quantita }}</td>
-        <td>{{ magazzino.libro.anno }}</td>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="5">Nessun libro trovato.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  @if (magazzino.value()) {
+    <p-table
+      [value]="magazzino.value()?.content ?? []"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="pageSize()"
+      [first]="pageIndex() * pageSize()"
+      [totalRecords]="magazzino.value()?.page?.totalElements ?? 0"
+      [loading]="magazzino.isLoading()"
+      dataKey="id"
+      [tableStyle]="{ 'min-width': '48rem' }"
+      (onPage)="onPage($event)"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Titolo</th>
+          <th>Casa Editrice</th>
+          <th>Quantità</th>
+          <th>Anno</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-riga>
+        <tr>
+          <td>{{ riga.libro.titolo }}</td>
+          <td>{{ riga.casaEditrice?.nome ?? '—' }}</td>
+          <td>{{ riga.quantita }}</td>
+          <td>{{ riga.libro.anno }}</td>
+          <td class="cell-action">
+            <div class="row-actions">
+              <p-button
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'Modifica ' + riga.libro.titolo"
+                (onClick)="openEdit(riga)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [loading]="deleting() === riga.id"
+                [ariaLabel]="'Elimina ' + riga.libro.titolo"
+                (onClick)="delete(riga)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">Nessun libro trovato.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+
+  <app-magazzino-dialog
+    [visible]="dialogVisible()"
+    (visibleChange)="onDialogVisibleChange($event)"
+    [riga]="editing()"
+    [caseEditrici]="caseEditriciOptions.value() ?? []"
+    [saving]="saving()"
+    (save)="save($event)"
+  />
 </section>

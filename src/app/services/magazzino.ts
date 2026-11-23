@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Magazzino } from '../interfaces/magazzino';
+import { Magazzino, MagazzinoRequest } from '../interfaces/magazzino';
 import { Page } from '../interfaces/page';
 
 const API_URL = `${environment.apiUrl}/magazzino`;
@@ -22,5 +22,20 @@ export class MagazzinoService {
   /** GET /api/magazzino/{id} */
   getById(id: number): Observable<Magazzino> {
     return this.http.get<Magazzino>(`${API_URL}/${id}`);
+  }
+
+  /** POST /api/magazzino */
+  create(request: MagazzinoRequest): Observable<Magazzino> {
+    return this.http.post<Magazzino>(API_URL, request);
+  }
+
+  /** PUT /api/magazzino/{id} */
+  update(id: number, request: MagazzinoRequest): Observable<Magazzino> {
+    return this.http.put<Magazzino>(`${API_URL}/${id}`, request);
+  }
+
+  /** DELETE /api/magazzino/{id} */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/${id}`);
   }
 }

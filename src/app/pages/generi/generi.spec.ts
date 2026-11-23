@@ -11,14 +11,20 @@ import { Generi } from './generi';
 describe('Generi', () => {
   const genere: Genere = { id: 1, nome: 'Romanzo' };
 
+  let createCalls: string[];
+  let updateCalls: { id: number; nome: string }[];
   let deleteCalls: number[];
   let confirmed: boolean;
   let failure: unknown;
+  let successToasts: string[];
   let errorToasts: { error: unknown; summary?: string }[];
 
   function createComponent(): Generi {
+    createCalls = [];
+    updateCalls = [];
     deleteCalls = [];
     errorToasts = [];
+    successToasts = [];
     confirmed = true;
     failure = null;
 
@@ -29,6 +35,14 @@ describe('Generi', () => {
           provide: GenereService,
           useValue: {
             getAll: () => of([genere]),
+            create: (nome: string) => {
+              createCalls.push(nome);
+              return failure ? throwError(() => failure) : of({ id: 99, nome });
+            },
+            update: (id: number, nome: string) => {
+              updateCalls.push({ id, nome });
+              return failure ? throwError(() => failure) : of({ id, nome });
+            },
             delete: (id: number) => {
               deleteCalls.push(id);
               return failure ? throwError(() => failure) : of(void 0);
@@ -42,7 +56,7 @@ describe('Generi', () => {
         {
           provide: NotificationService,
           useValue: {
-            success: () => {},
+            success: (summary: string) => successToasts.push(summary),
             error: () => {},
             errorFrom: (error: unknown, summary?: string) => errorToasts.push({ error, summary }),
           },
@@ -53,8 +67,12 @@ describe('Generi', () => {
     return TestBed.createComponent(Generi).componentInstance;
   }
 
-  const deleteGenere = (component: Generi, value: Genere) =>
-    (component as unknown as { delete(genere: Genere): Promise<void> }).delete(value);
+  const componentApi = (component: Generi) =>
+    component as unknown as {
+      openEdit(genere: Genere): void;
+      save(nome: string): Promise<void>;
+      delete(genere: Genere): Promise<void>;
+    };
 
   it('should render the table', async () => {
     createComponent();
@@ -67,33 +85,82 @@ describe('Generi', () => {
     expect(compiled.querySelector('p-table')).toBeTruthy();
   });
 
-  it('should delete the genere once the user confirms', async () => {
-    const component = createComponent();
+  it('should create a genere and notify success', async () => {
+    const api = componentApi(createComponent());
 
-    await deleteGenere(component, genere);
+    await api.save('Fantasy');
+
+    expect(createCalls).toEqual(['Fantasy']);
+    expect(updateCalls).toEqual([]);
+    expect(successToasts).toEqual(['Genere creato']);
+    expect(errorToasts).toEqual([]);
+  });
+
+  it('should update the genere opened from the table', async () => {
+    const api = componentApi(createComponent());
+    api.openEdit(genere);
+
+    await api.save('Romanzo Rosa');
+
+    expect(updateCalls).toEqual([{ id: genere.id, nome: 'Romanzo Rosa' }]);
+    expect(createCalls).toEqual([]);
+    expect(successToasts).toEqual(['Genere aggiornato']);
+  });
+
+  it('should hand the save failure to the notification service', async () => {
+    const api = componentApi(createComponent());
+    failure = new HttpErrorResponse({
+      status: 409,
+      error: { message: 'Genere con nome Fantasy già esistente' },
+    });
+
+    await api.save('Fantasy');
+
+    expect(successToasts).toEqual([]);
+    expect(errorToasts).toEqual([{ error: failure, summary: 'Creazione non riuscita' }]);
+  });
+
+  it('should hand the update failure to the notification service', async () => {
+    const api = componentApi(createComponent());
+    api.openEdit(genere);
+    failure = new HttpErrorResponse({
+      status: 409,
+      error: { message: 'Genere con nome Fantasy già esistente' },
+    });
+
+    await api.save('Fantasy');
+
+    expect(successToasts).toEqual([]);
+    expect(errorToasts).toEqual([{ error: failure, summary: 'Modifica non riuscita' }]);
+  });
+
+  it('should delete the genere once the user confirms', async () => {
+    const api = componentApi(createComponent());
+
+    await api.delete(genere);
 
     expect(deleteCalls).toEqual([genere.id]);
     expect(errorToasts).toEqual([]);
   });
 
   it('should not delete the genere when the user cancels', async () => {
-    const component = createComponent();
+    const api = componentApi(createComponent());
     confirmed = false;
 
-    await deleteGenere(component, genere);
+    await api.delete(genere);
 
     expect(deleteCalls).toEqual([]);
   });
 
-  it('should hand the failure to the notification service', async () => {
-    const component = createComponent();
+  it('should hand the deletion failure to the notification service', async () => {
+    const api = componentApi(createComponent());
     const error = new HttpErrorResponse({
       status: 409,
       error: { message: 'Genere con id 1 è usata da almeno un libro: cancellazione non consentita' },
     });
     failure = error;
 
-    await deleteGenere(component, genere);
+    await api.delete(genere);
 
     expect(errorToasts).toEqual([{ error, summary: 'Eliminazione non riuscita' }]);
   });
